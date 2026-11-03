@@ -3,7 +3,7 @@ const projects = [
     "id": "rojin",
     "title": "Rojin",
     "type": "PROYECTO DE TESIS / PERSONAJE 2.5D",
-    "intro": "Rojin es el protagonista de mi proyecto de tesis. Creé el arte conceptual original a mano y desarrollé el modelo 3D y los sombreadores para lograr una estética 2.5D.",
+    "intro": "Rojin es el protagonista de mi proyecto de tesis. Creé el arte conceptual original a mano y desarrollé el modelo 3D y los shaders para lograr una estética 2.5D.",
     "tools": [
       "Maya",
       "ZBrush",
@@ -20,17 +20,17 @@ const projects = [
       },
       {
         "image": "./assets/concept-illustration.jpg",
-        "title": "Modelo 3D — antes de los sombreadores",
+        "title": "Modelo 3D — antes de los shaders",
         "short": "Modelo 3D",
         "description": "El personaje en escala de grises antes del acabado final, visto desde varios ángulos para mostrar su forma.",
-        "alt": "Modelo 3D — antes de los sombreadores"
+        "alt": "Modelo 3D — antes de los shaders"
       },
       {
         "image": "./assets/concept-views.jpg",
-        "title": "Resultado final — sombreadores 2.5D",
+        "title": "Resultado final — shaders 2.5D",
         "short": "Acabado 2.5D",
-        "description": "El modelo 3D terminado, con sombreadores que crean una apariencia 2.5D. Vistas frontal, lateral y posterior.",
-        "alt": "Resultado final — sombreadores 2.5D"
+        "description": "El modelo 3D terminado, con shaders que crean una apariencia 2.5D. Vistas frontal, lateral y posterior.",
+        "alt": "Resultado final — shaders 2.5D"
       }
     ]
   },
