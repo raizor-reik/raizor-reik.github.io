@@ -139,14 +139,72 @@ const projectLightbox = document.getElementById('lightbox');
 let currentProject = projects[0];
 let currentSlide = 0;
 
-function showFullImage(slide) {
-  if (!slide.image || !projectLightbox) return;
+const fullviewTitle = projectLightbox.querySelector('p');
+const fullviewDescription = document.createElement('p');
+fullviewDescription.className = 'fullview-description';
+fullviewDescription.id = 'fullview-description';
+const fullviewDetails = document.createElement('div');
+fullviewDetails.className = 'fullview-details';
+const fullviewHeading = document.createElement('div');
+fullviewHeading.className = 'fullview-heading';
+fullviewTitle.className = 'fullview-title';
+fullviewTitle.id = 'fullview-title';
+const fullviewNav = document.createElement('div');
+fullviewNav.className = 'fullview-nav';
+const fullviewCounter = document.createElement('span');
+fullviewCounter.className = 'stage-counter';
+const fullviewPrevious = document.createElement('button');
+const fullviewNext = document.createElement('button');
+const spanishFullview = document.documentElement.lang === 'es';
+fullviewPrevious.type = fullviewNext.type = 'button';
+fullviewPrevious.textContent = '←';
+fullviewNext.textContent = '→';
+fullviewPrevious.setAttribute('aria-label', spanishFullview ? 'Imagen anterior en vista ampliada' : 'Previous full-size image');
+fullviewNext.setAttribute('aria-label', spanishFullview ? 'Imagen siguiente en vista ampliada' : 'Next full-size image');
+fullviewNav.append(fullviewCounter, fullviewPrevious, fullviewNext);
+fullviewHeading.append(fullviewTitle, fullviewNav);
+fullviewDetails.append(fullviewHeading, fullviewDescription);
+fullviewDetails.setAttribute('aria-live', 'polite');
+fullviewDetails.setAttribute('aria-atomic', 'true');
+projectLightbox.classList.add('model-lightbox');
+projectLightbox.setAttribute('aria-labelledby', 'fullview-title');
+projectLightbox.setAttribute('aria-describedby', 'fullview-description');
+projectLightbox.append(fullviewDetails);
+
+function renderFullImage() {
+  const slide = currentProject.slides[currentSlide];
+  if (!slide.image) return;
   const image = projectLightbox.querySelector('img');
   image.src = slide.image;
   image.alt = slide.alt;
-  projectLightbox.querySelector('p').textContent = `${currentProject.title} — ${slide.title}`;
-  projectLightbox.showModal();
+  fullviewTitle.textContent = slide.title;
+  fullviewDescription.textContent = slide.description;
+  const images = currentProject.slides.filter(item => item.image);
+  fullviewCounter.textContent = String(images.indexOf(slide) + 1).padStart(2, '0') + ' / ' + String(images.length).padStart(2, '0');
+  fullviewPrevious.disabled = fullviewNext.disabled = images.length < 2;
 }
+
+function showFullImage() {
+  if (!currentProject.slides[currentSlide].image) return;
+  renderFullImage();
+  if (!projectLightbox.open) projectLightbox.showModal();
+}
+
+function moveFullImage(direction) {
+  const indices = currentProject.slides.map((slide, index) => slide.image ? index : -1).filter(index => index >= 0);
+  if (indices.length < 2) return;
+  const next = (indices.indexOf(currentSlide) + direction + indices.length) % indices.length;
+  showSlide(indices[next]);
+}
+fullviewPrevious.addEventListener('click', () => moveFullImage(-1));
+fullviewNext.addEventListener('click', () => moveFullImage(1));
+projectLightbox.addEventListener('keydown', event => {
+  if (!projectLightbox.open || event.altKey || event.ctrlKey || event.metaKey) return;
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    event.preventDefault();
+    moveFullImage(event.key === 'ArrowRight' ? 1 : -1);
+  }
+});
 
 function showSlide(index) {
   const slides = currentProject.slides;
@@ -185,6 +243,7 @@ function showSlide(index) {
     button.classList.toggle('is-active', active);
     button.setAttribute('aria-pressed', String(active));
   });
+  if (projectLightbox.open) renderFullImage();
 }
 
 function selectProject(id, shouldScroll = false) {
